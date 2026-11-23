@@ -22,12 +22,18 @@ const ehRateLimit = (err) => statusDe(err) === 429 || /RESOURCE_EXHAUSTED|\b429\
 const ehTransitorio = (err) => [500, 502, 503, 504].includes(statusDe(err)) || /UNAVAILABLE|overloaded|fetch failed|ECONNRESET|ETIMEDOUT/i.test(String(err?.message || ''));
 
 // Traduz erros do SDK para mensagens amigaveis exibidas na interface.
+// A causa real (status e mensagem da API) vai para o terminal do servidor.
 function traduzirErro(err) {
   if (err instanceof AppError) return err;
+  const status = statusDe(err);
+  console.error(`[gemini] falha (status ${status || 'sem status'}): ${String(err?.message || err).slice(0, 400)}`);
   if (ehRateLimit(err)) {
     return new AppError(429, 'A IA recebeu muitas requisições agora (limite atingido). Aguarde alguns segundos e tente novamente.', 'RATE_LIMIT');
   }
-  if (statusDe(err) === 400 || statusDe(err) === 403) {
+  if (status === 404 || /NOT_FOUND|is not found/i.test(String(err?.message || ''))) {
+    return new AppError(502, 'Modelo do Gemini não encontrado. Confira GEMINI_TEXT_MODEL e GEMINI_IMAGE_MODEL no .env (rode: node scripts/listar-modelos.js).', 'MODELO_INVALIDO');
+  }
+  if ([400, 401, 403].includes(status)) {
     return new AppError(502, 'A IA recusou a requisição. Confira a chave e os modelos configurados no servidor.', 'IA_ERRO');
   }
   return new AppError(502, 'Não foi possível falar com a IA agora. Tente novamente em instantes.', 'IA_ERRO');
