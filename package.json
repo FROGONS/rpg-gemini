@@ -1,0 +1,26 @@
+{
+  "name": "rpg-multiplayer-gemini",
+  "version": "1.0.0",
+  "description": "TP3 - RPG de texto multiplayer cooperativo em tempo real, com Gemini como Mestre do Jogo e gerador de imagens.",
+  "main": "server.js",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "node database/migrate.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@google/genai": "^2.31.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^18.0.9",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "mysql2": "^3.24.6",
+    "socket.io": "^4.8.4"
+  }
+}
