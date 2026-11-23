@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Painel — RPG com Mestre IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="topo">
+    <a class="marca" href="/painel.html">RPG com Mestre IA</a>
+    <div class="topo-direita">
+      <span id="selo-demo" class="selo selo-alerta" hidden title="Sem chave do Gemini: Mestre e imagens simulados">Modo demonstração</span>
+      <span id="usuario-nome" class="suave"></span>
+      <button id="btn-sair" class="btn btn-pequeno" type="button">Sair</button>
+    </div>
+  </header>
+
+  <main class="pagina">
+    <div class="painel-grade">
+      <!-- ============ Personagens ============ -->
+      <section aria-labelledby="t-personagens">
+        <h1 id="t-personagens">Seus personagens</h1>
+        <div id="lista-personagens" class="lista" aria-live="polite"></div>
+
+        <form id="form-personagem" class="card" style="margin-top:1.25rem" novalidate>
+          <h2>Novo personagem</h2>
+          <div class="linha">
+            <div class="campo">
+              <label for="p-nome">Nome</label>
+              <input id="p-nome" maxlength="80" required>
+            </div>
+            <div class="campo">
+              <label for="p-classe">Classe</label>
+              <input id="p-classe" maxlength="40" list="classes" placeholder="Guerreira, Hacker, Alquimista…" required>
+              <datalist id="classes">
+                <option value="Guerreiro"><option value="Mago"><option value="Ladino"><option value="Clérigo">
+                <option value="Mecânica Cibernética"><option value="Andarilho Mutante"><option value="Caçador de Relíquias">
+              </datalist>
+            </div>
+          </div>
+          <div class="campo">
+            <label for="p-visual">Aparência</label>
+            <textarea id="p-visual" maxlength="900" required placeholder="Ex.: mulher alta de pele escura, cabelo crespo preso com fios de cobre, jaqueta de couro cheia de remendos e um braço mecânico dourado."></textarea>
+            <p class="dica">A IA usa esta descrição para pintar o retrato. Quanto mais detalhes, melhor.</p>
+          </div>
+
+          <fieldset style="border:0;padding:0;margin:0 0 .5rem">
+            <legend style="font-weight:500;margin-bottom:.4rem">Atributos</legend>
+            <p class="pontos">Pontos para distribuir: <span id="pontos-restantes">12</span></p>
+            <div id="atributos"></div>
+          </fieldset>
+
+          <p id="erro-personagem" class="aviso aviso-erro" role="alert" hidden></p>
+          <button class="btn btn-primario" type="submit" id="btn-criar-personagem">Criar personagem e gerar retrato</button>
+        </form>
+      </section>
+
+      <!-- ============ Aventuras ============ -->
+      <section aria-labelledby="t-aventuras">
+        <h1 id="t-aventuras">Aventuras</h1>
+
+        <div class="card" style="margin-bottom:1rem">
+          <div class="campo" style="margin-bottom:0">
+            <label for="sel-personagem">Jogar com</label>
+            <select id="sel-personagem"></select>
+          </div>
+        </div>
+
+        <form id="form-criar-sala" class="card" style="margin-bottom:1rem" novalidate>
+          <h2>Criar uma sala</h2>
+          <div class="campo">
+            <label for="s-nome">Nome da aventura</label>
+            <input id="s-nome" maxlength="100" placeholder="Ruínas de Sabará 2099" required>
+          </div>
+          <div class="campo">
+            <label for="s-tema">Tema e cenário</label>
+            <textarea id="s-tema" maxlength="600" required placeholder="Sci-fi distópico com folclore mineiro, onde o Saci hackeia drones e as cidades históricas viraram ruínas."></textarea>
+          </div>
+          <div class="linha">
+            <div class="campo">
+              <label for="s-tom">Tom da narrativa</label>
+              <input id="s-tom" maxlength="60" placeholder="sombrio, bem-humorado, épico…">
+            </div>
+            <div class="campo">
+              <label for="s-max">Máx. de jogadores</label>
+              <select id="s-max"><option>2</option><option>3</option><option selected>4</option><option>5</option><option>6</option><option>8</option></select>
+            </div>
+          </div>
+          <p id="erro-sala" class="aviso aviso-erro" role="alert" hidden></p>
+          <p id="criando-sala" class="aviso" hidden>O Mestre está criando o mundo, a campanha e o primeiro cenário. Isso pode levar alguns segundos…</p>
+          <button class="btn btn-primario" type="submit" id="btn-criar-sala">Criar sala</button>
+        </form>
+
+        <form id="form-entrar" class="card" style="margin-bottom:1rem" novalidate>
+          <h2>Entrar com um código</h2>
+          <div class="campo">
+            <label for="e-codigo">Código da sala</label>
+            <input id="e-codigo" class="codigo-input" maxlength="6" autocomplete="off" placeholder="ABC123" required>
+          </div>
+          <p id="erro-entrar" class="aviso aviso-erro" role="alert" hidden></p>
+          <button class="btn btn-primario" type="submit">Entrar na sala</button>
+        </form>
+
+        <h2>Suas salas</h2>
+        <div id="lista-salas" class="lista" aria-live="polite"></div>
+      </section>
+    </div>
+  </main>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/painel.js"></script>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sala — RPG com Mestre IA</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Fraunces:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <header class="jogo-topo">
+    <a class="btn btn-pequeno" href="/painel.html" style="text-decoration:none;display:inline-grid;place-items:center">Painel</a>
+    <div class="titulo">
+      <h1 id="sala-nome">Carregando sala…</h1>
+      <p id="sala-tema"></p>
+    </div>
+    <button id="btn-codigo" class="btn btn-pequeno codigo-btn" type="button" title="Copiar o código da sala">Código<strong id="sala-codigo">······</strong></button>
+    <span id="sala-status" class="selo"></span>
+    <span class="pequeno suave"><span id="conexao" class="ponto"></span><span id="conexao-texto">conectando</span></span>
+    <span id="selo-demo" class="selo selo-alerta" hidden title="Sem chave do Gemini: Mestre e imagens simulados">Modo demonstração</span>
+  </header>
+
+  <p id="erro-fatal" class="aviso aviso-erro" role="alert" style="margin:1rem 1.25rem" hidden></p>
+
+  <main class="mesa" id="mesa">
+    <div class="coluna">
+      <!-- Painel do cenário / mapa atual -->
+      <section class="cenario" aria-labelledby="cenario-titulo">
+        <div id="cenario-fundo" class="cenario-fundo gerando"><span id="cenario-msg">Preparando o cenário…</span></div>
+        <img id="cenario-img" alt="" hidden>
+        <div class="cenario-acao"><button id="btn-regerar" class="btn btn-pequeno" type="button" hidden>Gerar ilustração de novo</button></div>
+        <div class="cenario-legenda">
+          <h2 id="cenario-titulo">—</h2>
+          <p id="cenario-resumo"></p>
+        </div>
+      </section>
+      <div id="npcs" class="npcs" aria-label="Personagens presentes na cena"></div>
+
+      <!-- Mural de narrativa e ações -->
+      <section class="mural" aria-label="Narrativa e ações">
+        <div id="log" class="log" role="log" aria-live="polite" tabindex="0"></div>
+        <div id="indicador" class="indicador" hidden>O Mestre está narrando…</div>
+
+        <div id="alerta" class="faixa" hidden>
+          <div id="alerta-caixa" class="aviso aviso-alerta" role="alert" style="margin:0">
+            <div class="linha">
+              <span id="alerta-texto"></span>
+              <button id="btn-tentar" class="btn btn-pequeno" type="button" hidden>Tentar novamente</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="faixa-inicio" class="faixa" hidden>
+          <div class="aviso" style="margin:0">
+            <div class="linha">
+              <span id="texto-inicio">Compartilhe o código da sala e comece quando todos estiverem prontos.</span>
+              <button id="btn-iniciar" class="btn btn-primario" type="button" hidden>Iniciar aventura</button>
+            </div>
+          </div>
+        </div>
+
+        <form id="form-acao" class="entrada-acao" novalidate>
+          <div class="tipos" role="radiogroup" aria-label="Tipo de mensagem">
+            <label><input type="radio" name="tipo" value="acao" checked><span>Ação</span></label>
+            <label><input type="radio" name="tipo" value="fala"><span>Fala</span></label>
+          </div>
+          <div class="linha">
+            <textarea id="texto" maxlength="600" rows="2" aria-label="O que o seu personagem faz ou diz"></textarea>
+            <button id="btn-enviar" class="btn btn-primario" type="submit">Enviar</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <aside class="lateral" aria-label="Ficha e grupo">
+      <section class="bloco" aria-labelledby="ficha-titulo">
+        <div class="ficha-topo">
+          <div id="ficha-avatar" class="avatar avatar-vazio">—</div>
+          <div>
+            <h3 id="ficha-titulo">Seu personagem</h3>
+            <div id="ficha-classe" class="suave pequeno"></div>
+          </div>
+        </div>
+        <div class="vida-num"><span>Vida</span><span id="ficha-vida">—</span></div>
+        <div id="ficha-barra" class="barra" role="progressbar" aria-label="Vida" aria-valuemin="0"><i style="width:0"></i></div>
+        <div id="ficha-atributos" class="atributos"></div>
+        <h3 style="font-size:.95rem">Inventário</h3>
+        <ul id="ficha-inventario" class="inventario"></ul>
+      </section>
+
+      <section class="bloco" aria-labelledby="grupo-titulo">
+        <h3 id="grupo-titulo">Grupo</h3>
+        <div id="grupo"></div>
+      </section>
+
+      <details class="bloco" id="aventura">
+        <summary>A aventura</summary>
+        <p id="aventura-preludio"></p>
+        <p id="aventura-objetivo"></p>
+      </details>
+
+      <button id="btn-sair-sala" class="btn btn-pequeno" type="button">Sair desta sala</button>
+    </aside>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/sala.js"></script>
+</body>
+</html>
